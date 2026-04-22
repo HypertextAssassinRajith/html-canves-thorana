@@ -141,7 +141,10 @@
 		};
 
 		function hexToRgb(hex) {
-			const clean = hex.replace("#", "");
+			let clean = hex.replace("#", "");
+			if (clean.length === 3) {
+				clean = clean.split("").map((c) => c + c).join("");
+			}
 			const n = parseInt(clean, 16);
 			return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
 		}
@@ -175,7 +178,7 @@
 			ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 		}
 
-		function drawCircle(x, y, radius) {
+		function drawFramedCircle(x, y, radius) {
 			ctx.beginPath();
 			ctx.arc(x, y, radius, 0, Math.PI * 2);
 			ctx.fillStyle = "rgba(0,0,0,0.8)";
@@ -267,10 +270,10 @@
 			drawMakara(panelX, panelY, panelH * 0.75, panelH, "left");
 			drawMakara(panelX + panelW, panelY, panelH * 0.75, panelH, "right");
 
-			drawCircle(cx, cy, R);
+			drawFramedCircle(cx, cy, R);
 			for (let i = 0; i < 8; i++) {
 				const a = (Math.PI * 2 * i) / 8 + Math.PI / 2;
-				drawCircle(cx + orbit * Math.cos(a), cy + orbit * Math.sin(a), r);
+				drawFramedCircle(cx + orbit * Math.cos(a), cy + orbit * Math.sin(a), r);
 			}
 
 			const count = Math.max(8, Math.floor(config.density));
