@@ -166,7 +166,7 @@
 			
 			var COMMENTS_STORAGE_KEY = 'thorana-comments-v1';
 			var commentRotationTimer = null;
-			var NO_COMMENT_MESSAGE = 'මේ දක්වා කිසිවෙකු අදහසක් දක්වා නැත.(No one has commented so far.)';
+			var NO_COMMENT_MESSAGE = 'මේ දක්වා කිසිවෙකු අදහසක් දක්වා නැත. (No one has commented so far.)';
 
 			function getStoredComments() {
 				try {
@@ -174,6 +174,7 @@
 					var parsedComments = JSON.parse(rawComments || '[]');
 					return Array.isArray(parsedComments) ? parsedComments : [];
 				} catch (error) {
+					console.error('Unable to read stored comments.', error);
 					return [];
 				}
 			}
@@ -264,6 +265,7 @@
 				newCommUser.textContent = yourName;
 				newComDate.textContent = dateOfComment;
 				newComm.textContent = yourComment;
+				newComm.style.fontStyle = 'italic';
 
 				newCommHolder.appendChild(newCommUser);
 				newCommHolder.appendChild(newComDate);
