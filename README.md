@@ -15,3 +15,8 @@ This design is based on Sri Lankan traditional pandol designs for vesak season.T
 ### Standalone customizable version (HTML/CSS/JS only)
 - Open `/test.html` for a pure frontend standalone version.
 - It includes live controls for colors, glow, speed, density, bulb size, and overall scale.
+
+### Frontend-only comments (no PHP)
+- The main `/index.html` comment flow now runs fully in browser JavaScript.
+- Submitted comments are stored in `localStorage` on the user’s device.
+- No PHP backend (`process.php` / `comm.php`) is required.
