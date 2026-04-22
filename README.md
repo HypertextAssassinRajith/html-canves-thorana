@@ -1,22 +1,16 @@
-# HTML-CANVAS-තොරණ
+# React + Vite
 
-### හැදින්වීම  (DESCRIPTION)
-පේරාදෙණිය විශ්වවිද්යලිය ඉංජිනේරු පීඨ බෞද්ධ සහෝදර සංගමය මගින් ඉදිරිපත්  කරන DGITAL වෙසක් තොරණ - <b>රේවථී ප්‍රේතවස්තුව</b> <br>
-<div style = "background:black;">
-  <img src="https://raw.githubusercontent.com/DarshanaUOP/html-canves-thorana/db62086bb4f1a45046b72ef6e36df0322c13d61a/images/intro.png" width="100%" style="background:black;" >
-</div>
-<br>
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-### DESIGN
-This design is based on Sri Lankan traditional pandol designs for vesak season.The online pandol loads a HTML web page which is contains a `HTML Canvas` element, a description area and a comment section into user's web browser and then the javascript which is running on user's web browser is generating and animaite the Pandol. First, it measures the dimensions of the user's device screen, the height and width are the basic measurements it reads from the device. Width of the device is measures to calculate all points (x and y coordinates), shapes, and positions on the HTML Canvas. All the shapes are calculated according to the width of device and all are calculated through a **mathematical-geometrical moodel**.
+Currently, two official plugins are available:
 
-> The pandol is hosted on [dnb1654.com/thorana](https://darshanauop.github.io/html-canves-thorana/)
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-### Standalone customizable version (HTML/CSS/JS only)
-- Open `/test.html` for a pure frontend standalone version.
-- It includes live controls for colors, glow, speed, density, bulb size, and overall scale.
+## React Compiler
 
-### Frontend-only comments (no PHP)
-- The main `/index.html` comment flow now runs fully in browser JavaScript.
-- Submitted comments are stored in `localStorage` on the user’s device.
-- No PHP backend (`process.php` / `comm.php`) is required.
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+
+## Expanding the ESLint configuration
+
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
