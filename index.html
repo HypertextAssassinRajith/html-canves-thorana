@@ -182,6 +182,14 @@
 				localStorage.setItem(COMMENTS_STORAGE_KEY, JSON.stringify(comments));
 			}
 
+			function formatCommentDate(dateObj) {
+				try {
+					return dateObj.toLocaleString('en-CA', { timeZone: 'Asia/Colombo', hour12: true });
+				} catch (error) {
+					return dateObj.toLocaleString();
+				}
+			}
+
 			function saveCommentLog() {
 				try {
 					var rawLogs = localStorage.getItem(COMMENT_LOG_STORAGE_KEY);
@@ -190,7 +198,7 @@
 						logs = [];
 					}
 					logs.push({
-						date: new Date().toLocaleString('en-CA', { timeZone: 'Asia/Colombo', hour12: true }),
+						date: formatCommentDate(new Date()),
 						browser: navigator.userAgent
 					});
 					localStorage.setItem(COMMENT_LOG_STORAGE_KEY, JSON.stringify(logs));
@@ -203,10 +211,10 @@
 				var comment = document.getElementById('comment');
 				commenterName.textContent = name;
 				commentDate.textContent = date;
-				comment.innerHTML = '';
-				var italics = document.createElement('i');
-				italics.textContent = message;
-				comment.appendChild(italics);
+				comment.textContent = '';
+				var emphasis = document.createElement('em');
+				emphasis.textContent = message;
+				comment.appendChild(emphasis);
 			}
 
 			function startCommentRotation() {
@@ -252,7 +260,7 @@
 					return;
 				}
 
-				var dateOfComment = new Date().toLocaleString('en-CA', { timeZone: 'Asia/Colombo', hour12: true });
+				var dateOfComment = formatCommentDate(new Date());
 				var comments = getStoredComments();
 				comments.push({
 					name: yourName,
