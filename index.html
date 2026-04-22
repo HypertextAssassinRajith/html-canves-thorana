@@ -17,7 +17,7 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
 </head>
-<body onload="getComm()">
+<body>
 	<!-- <script>
 		$('#myModal').on('shown.bs.modal', function () {
 		  $('#myInput').trigger('focus')
@@ -164,6 +164,75 @@
 
 		<script>
 			
+			var COMMENTS_STORAGE_KEY = 'thorana-comments-v1';
+			var COMMENT_LOG_STORAGE_KEY = 'thorana-comment-logs-v1';
+			var commentRotationTimer = null;
+
+			function getStoredComments() {
+				try {
+					var rawComments = localStorage.getItem(COMMENTS_STORAGE_KEY);
+					var parsedComments = JSON.parse(rawComments || '[]');
+					return Array.isArray(parsedComments) ? parsedComments : [];
+				} catch (error) {
+					return [];
+				}
+			}
+
+			function saveStoredComments(comments) {
+				localStorage.setItem(COMMENTS_STORAGE_KEY, JSON.stringify(comments));
+			}
+
+			function saveCommentLog() {
+				try {
+					var rawLogs = localStorage.getItem(COMMENT_LOG_STORAGE_KEY);
+					var logs = JSON.parse(rawLogs || '[]');
+					if (!Array.isArray(logs)) {
+						logs = [];
+					}
+					logs.push({
+						date: new Date().toLocaleString('en-CA', { timeZone: 'Asia/Colombo', hour12: true }),
+						browser: navigator.userAgent
+					});
+					localStorage.setItem(COMMENT_LOG_STORAGE_KEY, JSON.stringify(logs));
+				} catch (error) {}
+			}
+
+			function renderComment(name, date, message) {
+				var commenterName = document.getElementById('commenterName');
+				var commentDate = document.getElementById('commentDate');
+				var comment = document.getElementById('comment');
+				commenterName.textContent = name;
+				commentDate.textContent = date;
+				comment.innerHTML = '';
+				var italics = document.createElement('i');
+				italics.textContent = message;
+				comment.appendChild(italics);
+			}
+
+			function startCommentRotation() {
+				var comments = getStoredComments();
+				var commenterName = document.getElementById('commenterName');
+				if (commentRotationTimer) {
+					clearInterval(commentRotationTimer);
+				}
+				if (comments.length === 0) {
+					commenterName.textContent = 'මේ දක්වා කිසිවෙකු අදහසක් දක්වා නැත.(No one has commented so far.)';
+					document.getElementById('commentDate').textContent = '';
+					document.getElementById('comment').textContent = '';
+					return;
+				}
+
+				var currentIndex = 0;
+				commenterName.textContent = "අපවෙත ඔබගේ වටිනා අදහස් " + comments.length + "ක් ලැබී ඇත.";
+				renderComment(comments[currentIndex].name, comments[currentIndex].date, comments[currentIndex].comment);
+				commentRotationTimer = setInterval(function(){
+					currentIndex++;
+					if (currentIndex >= comments.length) {
+						currentIndex = 0;
+					}
+					renderComment(comments[currentIndex].name, comments[currentIndex].date, comments[currentIndex].comment);
+				},5000);
+			}
 
 			var userName = document.getElementById("userName");
 			var userComment = document.getElementById("userComment");
@@ -176,61 +245,51 @@
 				yourName = userName.value;
 				yourComment = userComment.value;
 
-				var data = new FormData();
-				data.append('name',yourName);
-				data.append('comment',yourComment);
-				
-				var request = new XMLHttpRequest();
-				request.addEventListener('readystatechange',function(event){
-					if (this.readyState == 4) {
-						if (this.status == 200) {
-							var response = this.response;
-							// console.log(response);
-							var obj = JSON.parse(response);
+				yourName = (yourName || '').trim();
+				yourComment = (yourComment || '').trim();
+				if (!yourName || !yourComment) {
+					alert('Please enter your name and comment.');
+					return;
+				}
 
-							if (obj.massage == 'Error') {
-								alert(obj.cause);
-							}else if (obj.massage == 'Done') {
-								var user = obj.user;
-								var comment = obj.comment;
-								var dateOfComment = obj.date;
-
-								var mediaviewer = document.getElementById('newCommViwer');
-								var newCommList, newCommHolder,newCommUser,newComm,newComDate;
-								
-								newCommList = document.createElement('li');
-								newCommHolder = document.createElement('div');
-								newCommUser = document.createElement('h4');
-								newComm = document.createElement('h6');
-								newComDate = document.createElement('h6');
-
-								newCommHolder.setAttribute('class','media-body');
-								newCommHolder.setAttribute('style','border-left: 2px solid #F9B500;padding-left: 10px');
-								newCommUser.setAttribute('class','mt-0');
-								// newComm.setAttribute('class','');
-								// newCommDate.setAttribute('class','');
-								newCommUser.innerHTML = user;
-								newComDate.innerHTML = dateOfComment;
-								newComm.innerHTML = comment;
-
-								newCommHolder.appendChild(newCommUser);
-								newCommHolder.appendChild(newComDate);
-								newCommHolder.appendChild(newComm);
-
-								newCommList.appendChild(newCommHolder);
-
-								mediaviewer.appendChild(newCommList);
-
-								userName.value = '';
-								userComment.value = '';
-							}
-
-						}
-					}
+				var dateOfComment = new Date().toLocaleString('en-CA', { timeZone: 'Asia/Colombo', hour12: true });
+				var comments = getStoredComments();
+				comments.push({
+					name: yourName,
+					comment: yourComment,
+					date: dateOfComment,
+					browser: navigator.userAgent
 				});
-				request.open('POST','process.php');
-				request.setRequestHeader('Cache-Control','no-cache');
-				request.send(data);
+				saveStoredComments(comments);
+				saveCommentLog();
+
+				var mediaviewer = document.getElementById('newCommViwer');
+				var newCommList, newCommHolder,newCommUser,newComm,newComDate;
+				
+				newCommList = document.createElement('li');
+				newCommHolder = document.createElement('div');
+				newCommUser = document.createElement('h4');
+				newComm = document.createElement('h6');
+				newComDate = document.createElement('h6');
+
+				newCommHolder.setAttribute('class','media-body');
+				newCommHolder.setAttribute('style','border-left: 2px solid #F9B500;padding-left: 10px');
+				newCommUser.setAttribute('class','mt-0');
+				newCommUser.textContent = yourName;
+				newComDate.textContent = dateOfComment;
+				newComm.textContent = yourComment;
+
+				newCommHolder.appendChild(newCommUser);
+				newCommHolder.appendChild(newComDate);
+				newCommHolder.appendChild(newComm);
+
+				newCommList.appendChild(newCommHolder);
+
+				mediaviewer.appendChild(newCommList);
+
+				userName.value = '';
+				userComment.value = '';
+				startCommentRotation();
 			});	
 
 
@@ -407,57 +466,7 @@
 		var pointX,pointY;
 
 		window.onload = function(){
-
-			var request2 = new XMLHttpRequest();
-			var data = new FormData();
-				data.append('name','yourName');
-				var nameOfCommenter,dateOfTheComment,theComment;
-				var commenterName = document.getElementById('commenterName');
-				var commentDate = document.getElementById('commentDate');
-				var comment = document.getElementById('comment');
-
-				request2.addEventListener('readystatechange',function(event){
-					if (this.readyState == 4) {
-						if (this.status == 200) {
-							var response = this.response;
-							// console.log(response);
-							var obj = JSON.parse(response);
-
-							var lengthObj = obj.length;	
-							// console.log(lengthObj);
-							commenterName.innerHTML = "අපවෙත ඔබගේ වටිනා අදහස් " +lengthObj + "ක් ලැබී ඇත.";
-							var kx = 0;
-							setInterval(function(){
-								nameOfCommenter = obj[kx].name;
-								dateOfTheComment = obj[kx].date;
-								theComment = obj[kx].comment;
-								// console.log(nameOfCommenter + ' '  + dateOfTheComment  + ' '  + theComment);
-
-								commenterName.innerHTML = '';
-								commenterName.innerHTML = nameOfCommenter;
-
-								commentDate.innerHTML = '';
-								commentDate.innerHTML = dateOfTheComment;
-
-								comment.innerHTML = '';
-								comment.innerHTML = '<i>'+theComment+'</i>';
-
-								console.log(kx);
-
-								kx++;
-								if (kx == lengthObj) {
-									kx=0;
-								}
-
-							},5000);
-
-						}
-					}
-				});
-				request2.open('POST','comm.php');
-				request2.setRequestHeader('Cache-Control','no-cache');
-				request2.send(data);
-			///
+			startCommentRotation();
 
 			myCanvas = document.getElementById('myCanvas');
 			myCanvas.width = ww;
