@@ -165,8 +165,8 @@
 		<script>
 			
 			var COMMENTS_STORAGE_KEY = 'thorana-comments-v1';
-			var COMMENT_LOG_STORAGE_KEY = 'thorana-comment-logs-v1';
 			var commentRotationTimer = null;
+			var NO_COMMENT_MESSAGE = 'මේ දක්වා කිසිවෙකු අදහසක් දක්වා නැත.(No one has commented so far.)';
 
 			function getStoredComments() {
 				try {
@@ -183,26 +183,7 @@
 			}
 
 			function formatCommentDate(dateObj) {
-				try {
-					return dateObj.toLocaleString('en-CA', { timeZone: 'Asia/Colombo', hour12: true });
-				} catch (error) {
-					return dateObj.toLocaleString();
-				}
-			}
-
-			function saveCommentLog() {
-				try {
-					var rawLogs = localStorage.getItem(COMMENT_LOG_STORAGE_KEY);
-					var logs = JSON.parse(rawLogs || '[]');
-					if (!Array.isArray(logs)) {
-						logs = [];
-					}
-					logs.push({
-						date: formatCommentDate(new Date()),
-						browser: navigator.userAgent
-					});
-					localStorage.setItem(COMMENT_LOG_STORAGE_KEY, JSON.stringify(logs));
-				} catch (error) {}
+				return dateObj.toLocaleString();
 			}
 
 			function renderComment(name, date, message) {
@@ -224,14 +205,13 @@
 					clearInterval(commentRotationTimer);
 				}
 				if (comments.length === 0) {
-					commenterName.textContent = 'මේ දක්වා කිසිවෙකු අදහසක් දක්වා නැත.(No one has commented so far.)';
+					commenterName.textContent = NO_COMMENT_MESSAGE;
 					document.getElementById('commentDate').textContent = '';
 					document.getElementById('comment').textContent = '';
 					return;
 				}
 
 				var currentIndex = 0;
-				commenterName.textContent = "අපවෙත ඔබගේ වටිනා අදහස් " + comments.length + "ක් ලැබී ඇත.";
 				renderComment(comments[currentIndex].name, comments[currentIndex].date, comments[currentIndex].comment);
 				commentRotationTimer = setInterval(function(){
 					currentIndex++;
@@ -265,11 +245,9 @@
 				comments.push({
 					name: yourName,
 					comment: yourComment,
-					date: dateOfComment,
-					browser: navigator.userAgent
+					date: dateOfComment
 				});
 				saveStoredComments(comments);
-				saveCommentLog();
 
 				var mediaviewer = document.getElementById('newCommViwer');
 				var newCommList, newCommHolder,newCommUser,newComm,newComDate;
