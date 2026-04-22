@@ -13,5 +13,5 @@ This design is based on Sri Lankan traditional pandol designs for vesak season.T
 > The pandol is hosted on [dnb1654.com/thorana](https://darshanauop.github.io/html-canves-thorana/)
 
 ### Standalone customizable version (HTML/CSS/JS only)
-- Open `/test.html` for a pure frontend version (no PHP, no external UI libraries).
+- Open `/test.html` for a pure frontend standalone version.
 - It includes live controls for colors, glow, speed, density, bulb size, and overall scale.
