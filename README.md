@@ -11,3 +11,7 @@
 This design is based on Sri Lankan traditional pandol designs for vesak season.The online pandol loads a HTML web page which is contains a `HTML Canvas` element, a description area and a comment section into user's web browser and then the javascript which is running on user's web browser is generating and animaite the Pandol. First, it measures the dimensions of the user's device screen, the height and width are the basic measurements it reads from the device. Width of the device is measures to calculate all points (x and y coordinates), shapes, and positions on the HTML Canvas. All the shapes are calculated according to the width of device and all are calculated through a **mathematical-geometrical moodel**.
 
 > The pandol is hosted on [dnb1654.com/thorana](https://darshanauop.github.io/html-canves-thorana/)
+
+### Standalone customizable version (HTML/CSS/JS only)
+- Open `/test.html` for a pure frontend version (no PHP, no external UI libraries).
+- It includes live controls for colors, glow, speed, density, bulb size, and overall scale.
