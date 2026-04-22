@@ -107,7 +107,7 @@
 			<button id="reset" type="button">Reset</button>
 		</aside>
 		<div class="canvas-wrap">
-			<canvas id="myCanvas" width="1400" height="700">Your browser does not support canvas.</canvas>
+			<canvas id="myCanvas">Your browser does not support canvas.</canvas>
 		</div>
 	</div>
 
@@ -156,7 +156,7 @@
 		function setConfigFromInputs() {
 			for (const key in controls) {
 				const value = controls[key].value;
-				config[key] = ["speed", "density", "size", "glow", "scale"].includes(key) ? Number(value) : value;
+				config[key] = controls[key].type === "range" ? Number(value) : value;
 			}
 		}
 
